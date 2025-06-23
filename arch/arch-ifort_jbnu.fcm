@@ -1,0 +1,41 @@
+# generic ifort compiler options for linux
+# NCDF_INC netcdf include file
+# NCDF_LIB netcdf library
+# FC Fortran compiler command
+# FCFLAGS Fortran compiler flags
+# FFLAGS Fortran 77 compiler flags
+# LD linker
+# LDFLAGS linker flags, e.g. -L<lib dir> if you have libraries in a
+# FPPFLAGS pre-processing flags
+# AR assembler
+# ARFLAGS assembler flags
+# MK make
+# USER_INC additional include files for the compiler, e.g. -I<include dir>
+# USER_LIB additional libraries to pass to the linker, e.g. -l<library>
+# CC          C compiler used to compile conv for AGRIF
+# CFLAGS      compiler flags used with CC
+#%LDFLAGS -L/usr/local/intel/inspector_2020.3.0.604771/lib64 -lstdc++
+
+%NCDF_INC -I/usr/local/netcdf/4.6.1_intel19/include
+%NCDF_LIB -L/usr/local/netcdf/4.6.1_intel19/lib -lnetcdf -lnetcdff -L/usr/local/hdf5/1.10.5_intel19/lib -lhdf5_hl -lhdf5
+%OASIS_INC -I/home/grims/lib/oasis3-mct/include
+%OASIS_LIB -L/home/grims/lib/oasis3-mct/lib -lpsmile.MPI1 -lmct -lmpeu -lscrip -L/usr/local/intel/lib/intel64 -liomp5
+#%XIOS_INC -I/home/grims/lib/xios-1.0_r703/inc
+#%XIOS_LIB -L/home/grims/lib/xios-1.0_r703/lib -lxios
+%XIOS_INC -I/home/grims/lib/xios2/trunk/inc
+%XIOS_LIB -L/home/grims/lib/xios2/trunk/lib -lxios
+%CPP                 cpp
+%FC mpifort -I/usr/local/mpi/intel19/mvapich2-2.3.4/include
+%FCFLAGS -r8 -O3 -xHost -fp-model source -traceback -assume byterecl
+%FFLAGS %FCFLAGS
+%LD mpifort -I/usr/local/mpi/intel19/mvapich2-2.3.4/include
+%FPPFLAGS -P -traditional
+%LDFLAGS -L/usr/local/intel/inspector/lib64 -lstdc++
+%AR ar
+%ARFLAGS -r
+%MK gmake
+%USER_INC %XIOS_INC %OASIS_INC %NCDF_INC
+%USER_LIB %XIOS_LIB %OASIS_LIB %NCDF_LIB
+%CC                  icc
+%CFLAGS              -O0
+
