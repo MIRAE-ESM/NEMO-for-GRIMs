@@ -382,7 +382,8 @@ CONTAINS
                   llprevmth = llprevday .AND. nday   == 1                                  ! use previous month file?
                   llprevyr  = llprevmth .AND. nmonth == 1                                  ! use previous year  file?
                ELSE                                           ! yearly file
-                  sdjf%nrec_a(1) = NINT( 24. * REAL(365,wp) / sdjf%freqh )                 ! last record of previous year 
+                  sdjf%nrec_a(1) = NINT( 24. * REAL(nyear_len(0),wp) / sdjf%freqh )        ! last record of previous year 
+                  IF( sdjf%ln_clim ) sdjf%nrec_a(1) = NINT( 24. * 365. / sdjf%freqh )      ! climatology has 365 days
                   llprevyr = .NOT. sdjf%ln_clim                                            ! use previous year  file?
                ENDIF
             ENDIF
@@ -544,6 +545,9 @@ CONTAINS
          ELSEIF( sdjf%cltype(1:4) == 'week'    ) THEN   ;   ztmp = REAL(isec_week ,wp)  ! since the first day of the current week
          ELSEIF( sdjf%cltype      == 'daily'   ) THEN   ;   ztmp = REAL(nsec_day  ,wp)  ! since 00h of the current day
          ELSE                                           ;   ztmp = REAL(nsec_year ,wp)  ! since 00h on Jan 1 of the current year
+            IF( sdjf%ln_clim .AND. nmonth_len(2) == 29 .AND. ztmp >= 59. * rday ) THEN
+               ztmp = ztmp - rday ! adjust time to 365-day climatology by removing leap day
+            ENDIF
          ENDIF
          ztmp = ztmp + 0.5 * REAL(kn_fsbc - 1, wp) * rdt + REAL( it_offset, wp )        ! centrered in the middle of sbc time step
          ztmp = ztmp + 0.01 * rdt                                                       ! avoid truncation error 
@@ -588,9 +592,6 @@ CONTAINS
          ELSE
              sdjf%nrec_a(2) = iendrec                        ! swap at the end    of the record
              sdjf%nrec_b(2) = iendrec - ifreq_sec            ! beginning of the record (only for print)
-         ENDIF
-         IF( sdjf%cltype == 'yearly' .and. sdjf%ln_clim .and. nyear_len(1) .eq. 366 .and. sdjf%nrec_a(1) .ge. 60 ) THEN
-             sdjf%nrec_a(1) = sdjf%nrec_a(1) - 1
          ENDIF
          !
       ENDIF
@@ -1118,7 +1119,8 @@ CONTAINS
          !
          ! find the last record to be read -> update sdjf%nreclast
          indexyr = iyear - nyear + 1
-         zyear_len = REAL(365, wp)
+         zyear_len = REAL(nyear_len( indexyr ), wp)
+         IF( sdjf%ln_clim ) zyear_len = 365. ! climatology has 365 days
          SELECT CASE ( indexyr )
          CASE ( 0 )   ;   zmonth_len = 31.   ! previous year -> imonth = 12
          CASE ( 1 )   ;   zmonth_len = REAL(nmonth_len(imonth), wp)
