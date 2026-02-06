@@ -36,15 +36,15 @@
 %NCDF_LIB            -L${NETCDF}/lib -lnetcdff -lnetcdf
 %HDF5_INC            -I${HDF5}/include
 %HDF5_LIB            -L${HDF5}/lib -lhdf5_hl -lhdf5
-%XIOS_INC            -I/home/sul/GRIMs-NEMO/XIOS/inc
-%XIOS_LIB            -L/home/sul/GRIMs-NEMO/XIOS/lib -lxios
-%OASIS_INC           -I/home/sul/GRIMs-NEMO/OASIS3-MCT/include
-%OASIS_LIB           -L/home/sul/GRIMs-NEMO/OASIS3-MCT/lib -lpsmile.MPI1 -lscrip -lmct -lmpeu
+%XIOS_INC            -I/home/sul/MIRAE-ESM/LIBS/XIOS2/inc
+%XIOS_LIB            -L/home/sul/MIRAE-ESM/LIBS/XIOS2/lib -lxios
+%OASIS_INC           -I/home/sul/MIRAE-ESM/LIBS/OASIS3-MCT/include
+%OASIS_LIB           -L/home/sul/MIRAE-ESM/LIBS/OASIS3-MCT/lib -lpsmile.MPI1 -lscrip -lmct -lmpeu
 %CPP                 cpp
-%FC                  mpiifort
+%FC                  mpiifx
 %FCFLAGS             -r8 -O3 -fp-model source -traceback
 %FFLAGS              %FCFLAGS
-%LD                  mpiifort
+%LD                  mpiifx
 %FPPFLAGS            -P -traditional
 %LDFLAGS             -lstdc++ -lz -lcurl
 %AR                  ar
@@ -52,5 +52,5 @@
 %MK                  gmake
 %USER_INC            %XIOS_INC %OASIS_INC %NCDF_INC %HDF5_INC
 %USER_LIB            %XIOS_LIB %OASIS_LIB %NCDF_LIB %HDF5_LIB
-%CC                  mpiicc
+%CC                  mpiicx
 %CFLAGS              -O3
